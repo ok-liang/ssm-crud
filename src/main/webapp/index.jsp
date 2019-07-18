@@ -515,7 +515,7 @@
         //4、再弹出模态框。
         //弹出模态框
         $("#empUpdateModal").modal({
-            backdrop:"static" // 点击模态框的其他位置，模态框不会关闭。
+            backdrop:"static", // 点击模态框的其他位置，模态框不会关闭。
         });
     });
     /**
@@ -538,13 +538,15 @@
 
     /**
      * 4.3、点击Update更新按钮，更新员工信息
-     * 方式一：把POST请求，转为PUT请求。
-     *      type:"POST", data:$("#empUpdateModal form").serialize() + "&_method=PUT",
-     *      然后Controller用PUT方法。
+     * 方式一：1、把POST请求，转为PUT请求。
+     *      type:"POST",
+     *      data:$("#empUpdateModal form").serialize() + "&_method=PUT",
+     *      然后Controller写PUT方法。
+     *      2、web.xml中配置过滤器。
      *
      * 方式二：直接发送PUT请求。
-     *      type:"PUT",
-     *
+     *      1、type:"PUT",
+     *      2、在web.xml中配置另一个过滤器。
      */
     $("#emp_update_btn").click(function () {
 
@@ -559,16 +561,15 @@
             show_validate_msg("#email_add_input","success","");
         }
 
-        alert($(this).attr("update-id"));
         //2、发送Ajax请求，保存修改过的数据。
         $.ajax({
             url:"${APP_PATH}/emp/" + $(this).attr("update-id"),
             type:"PUT",
             data:$("#empUpdateModal form").serialize(),
             success:function (result) {
-                //1.关闭对话框
-                $("#empUpdateModal").hide();
-                //2.返回到本页面
+                //1.关闭模态框
+                $("#empUpdateModal").modal('hide');
+                //2.来到最后一页，显示刚才保存的数据
                 to_page(currentPage);
             }
         });
